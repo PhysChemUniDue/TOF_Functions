@@ -1,11 +1,11 @@
-function fh = tof_show(data_set)
+function fh = tof_show(data_set, plotResiduals)
 
 colors = lines();
 
 for i = 1:numel(data_set)
     
     fh(i) = figure('WindowStyle', 'normal'); %#ok
-    if isfield(data_set(i), 'fitobj')
+    if isfield(data_set(i), 'fitobj') && plotResiduals
         subplot(2, 1, 1)
     end
     hold on
@@ -13,6 +13,8 @@ for i = 1:numel(data_set)
         'Color', [0.7 0.7 0.7], ...
         'Marker', '.', ...
         'LineStyle', 'none')
+    
+    set(gca,  'XLim', [0, 0.5e-3])
     
     if isfield(data_set(i), 'fitobj')
         
@@ -51,7 +53,7 @@ for i = 1:numel(data_set)
     
     %% Plot Residuals
     
-    if isfield(data_set(i), 'fitobj')
+    if isfield(data_set(i), 'fitobj') && plotResiduals
         
         start_index = data_set(i).fitopts.startindex;
         end_index = data_set(i).fitopts.endindex;
@@ -74,8 +76,12 @@ for i = 1:numel(data_set)
     
     %% Set x axis
     
-    for j = 1:2
-        subplot(2, 1, j)
+    if plotResiduals
+        for j = 1:2
+            subplot(2, 1, j)
+            xlim([0, data_set(i).time(end_index)])
+        end
+    else
         xlim([0, data_set(i).time(end_index)])
     end
 end
